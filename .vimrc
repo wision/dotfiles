@@ -21,6 +21,9 @@
 	Plugin 'vim-scripts/twilight256.vim'
 	Plugin 'wincent/Command-T'
 	Plugin 'terryma/vim-multiple-cursors'
+	Plugin 'git@github.com:vim-scripts/AnsiEsc.vim.git'
+	Bundle 'mattn/webapi-vim'
+	Bundle 'mattn/gist-vim'
 	Bundle 'derekwyatt/vim-scala'
 	Bundle 'kchmck/vim-coffee-script'
 
@@ -34,18 +37,22 @@
 """"""""""""
 
 """ to finish install of command-t
+"cd ~/.vim/bundle/Command-T
 "make
+"vim
 ":e command-t.vba
 ":so %
-"cd ~/.vim/ruby/command-t
+":q
+"cd ruby/command-t
 "ruby extconf.rb
 "make
 
 
 
 set t_Co=256
+set ignorecase
 set smartcase
-set nowrapscan
+"set nowrapscan
 set list
 set nocompatible
 set exrc
@@ -82,6 +89,7 @@ set tabpagemax=30
 "set wildignore+=**/node_modules/*
 "let g:ctrlp_custom_ignore = 'node_modules'
 let g:CommandTMaxHeight=20
+let g:gist_post_private = 1
 
 "set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
 "let g:Powerline_symbols = 'fancy'
@@ -118,7 +126,7 @@ syntax on
 "map <S-T> :tabnew<CR>
 
 " kopirovani a ukladani do glob bufferu
-vmap <C-y> "+y
+vmap <C-y> "*y
 " vlozeni z globalni schranky
 "map <C-v> "+gP
 " ukladani souboru na bezne <Ctrl>-<s>
@@ -143,10 +151,14 @@ map <C-p> :CommandT<cr>
 "nmap <C-p> :CommandT<cr>
 "imap <C-p> <ESC>:CommandT<cr>a
 
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+"nnoremap <C-J> <C-W><C-J>
+"nnoremap <C-K> <C-W><C-K>
+"nnoremap <C-L> <C-W><C-L>
+"nnoremap <C-H> <C-W><C-H>
+map <C-J> :bp<cr>
+map <C-K> :bn<cr>
+map <C-L> :bn<cr>
+map <C-H> :bp<cr>
 
 
 inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
@@ -174,7 +186,7 @@ endfun
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
-  autocmd FileType c,cpp,java,php,ruby,python,js,coffee autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+  autocmd FileType c,cpp,java,php,ruby,python,js,coffee,scala autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
   autocmd BufEnter * :syntax sync fromstart
 
   " Enable file type detection.
@@ -215,9 +227,13 @@ hi Pmenu ctermbg=235 ctermfg=white
 
 hi LineNr       ctermbg=black          ctermfg=245
 hi Visual       ctermbg=235            ctermfg=246            cterm=bold
-hi Search       ctermbg=white          ctermfg=black
+hi Search       ctermbg=darkgray       ctermfg=black
 hi StatusLine   ctermbg=white          ctermfg=black
 hi SignColumn   ctermbg=black
+hi ColorColumn  ctermbg=234
+
+set colorcolumn=81
+"let &colorcolumn=join(range(81,999),",")
 
 
 

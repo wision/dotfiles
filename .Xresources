@@ -4,13 +4,14 @@ xterm*foreground:	white
 xterm*highlightColor:	darkgrey
 xterm*utf8:		2
 !XTerm*utf8Title:	1
-xterm*saveLines:	20000
+xterm*saveLines:	50000
 xterm*loginShell:	true
 xterm*cursorColor:	white
 xterm*charClass:	33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
 xterm*faceName:		Deja Vu Sans Mono for Powerline
 !xterm*faceName:		Deja Vu Sans Mono
 xterm*faceSize:		10
+xterm*eightBitInput: true
 !xterm*termName:		xterm-256color
 !XTerm*xftAntialias:	1
 
@@ -65,8 +66,8 @@ Xmessage*Scrollbar.borderWidth: 0
 ! xcursor
 Xcursor.theme: whiteglass
 
-!Xft.dpi:        96
-!Xft.antialias:  true
-!Xft.rgba:       rgb
-!Xft.hinting:    true
-!Xft.hintstyle:  hintslight
+Xft.dpi:        96
+Xft.antialias:  true
+Xft.rgba:       rgb
+Xft.hinting:    true
+Xft.hintstyle:  hintslight

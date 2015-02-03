@@ -5,8 +5,12 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.Circle	-- circle layout
 import XMonad.Layout.Tabbed	-- tabbed layout
 import XMonad.Layout.ShowWName	-- shows workspace name
+import XMonad.Layout.Grid -- shows workspace name
 import XMonad.Actions.CycleWS
 import XMonad.Actions.SwapWorkspaces
+
+--import XMonad.Hooks.ICCCMFocus
+import XMonad.Hooks.SetWMName
 --import DBus.Client.Simple
 --mport System.Taffybar.XMonadLog (dbusLogWithPP, taffybarPP)
 import System.IO
@@ -40,7 +44,7 @@ myNumlockMask   = mod2Mask
 --
 -- A tagging example:
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+myWorkspaces    = ["1","2","3","4","5","6","7","8","9","10"]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -53,7 +57,7 @@ myFocusedBorderColor = "#fff"
 -- Key bindings. Add, modify or remove key bindings here.
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask  , xK_Return ), spawn $ XMonad.terminal conf)			  -- launch a terminal
-    , ((modMask                , xK_p      ), spawn "gmrun")					  -- launch gmrun
+--    , ((modMask                , xK_p      ), spawn "gmrun")					  -- launch gmrun
     , ((modMask                , xK_F2     ), spawn "exe=`dmenu_run`  && eval \"exec $exe\"")	  -- launch dmenu
     , ((modMask .|. shiftMask  , xK_c      ), kill)						  -- Close focused window 
     , ((modMask                , xK_space  ), sendMessage NextLayout)				  -- Rotate through the available layout algorithms
@@ -72,8 +76,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask                , xK_h      ), sendMessage Shrink)				  -- Shrink the master area
     , ((modMask                , xK_l      ), sendMessage Expand)				  -- Expand the master area
     , ((modMask                , xK_t      ), withFocused $ windows . W.sink)			  -- Push window back into tiling
-    , ((modMask                , xK_comma  ), sendMessage (IncMasterN 1))			  -- Increment the number of windows in the master area
-    , ((modMask                , xK_period ), sendMessage (IncMasterN (-1)))			  -- Deincrement the number of windows in the master area
+--    , ((modMask                , xK_comma  ), sendMessage (IncMasterN 1))			  -- Increment the number of windows in the master area
+--    , ((modMask                , xK_period ), sendMessage (IncMasterN (-1)))			  -- Deincrement the number of windows in the master area
     , ((modMask                , xK_q      ), restart "xmonad" True)                              -- XMonad restart
     , ((modMask                , xK_Left   ), prevWS)                              -- switch to previous workspace
     , ((modMask                , xK_Right  ), nextWS)                              -- switch to next workspace
@@ -81,8 +85,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. shiftMask  , xK_b      ), spawn "killall -s SIGUSR1 xmobar &> /dev/null")     -- Switch xmobar to next screen
     , ((modMask                , xK_x      ), spawn "xscreensaver-command -lock")                 -- lock session with xscreensaver
 --    , ((0                      , 0x1008ff2f), spawn "sudo hibernate-ram &> /dev/null")            -- hibernate
---    , ((modMask                , xK_w      ), spawn "wpa_cli scan reassociate")                   -- scan for wi-fi networks and reassociate
---    , ((modMask .|. shiftMask  , xK_v      ), spawn "pavucontrol &> /dev/null")                   -- run pavucontrol
+    , ((modMask                , xK_w      ), spawn "wpa_cli scan reassociate")                   -- scan for wi-fi networks and reassociate
+    , ((modMask .|. shiftMask  , xK_v      ), spawn "pavucontrol &> /dev/null")                   -- run pavucontrol
 --    , ((0                      , xK_Print  ), spawn "scrot -q 100 /tmp/screen_%Y-%m-%d.png -d 1") -- Take screenshot
     -- Audio control: lower,raise,mute
 --    , ((0                      , 0x1008FF11), spawn "pacmd dump|awk --non-decimal-data '$1~/set-sink-volume/{system (\"pacmd \"$1\" \"$2\" \"$3-1000)}'")
@@ -94,19 +98,20 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- mod-[1..9], Switch to workspace N
     -- mod-shift-[1..9], Move client to workspace N
     [((m .|. modMask, k), windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
+        | (i, k) <- zip (XMonad.workspaces conf) [xK_1, xK_2, xK_3, xK_4, xK_5, xK_6, xK_7, xK_8, xK_9, xK_0]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
     ++
 
     -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
     -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
     [((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
+        | (key, sc) <- zip [xK_e, xK_w, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
---    ++
---    [((modMask .|. controlMask, k), windows $ swapWithCurrent i)
---        | (i, k) <- zip workspaces [xK_1 ..]]
+    ++
+
+    [((controlMask .|. modMask, k), windows $ swapWithCurrent i)
+        | (i, k) <- zip myWorkspaces [xK_1 ..]]
 
 
 ------------------------------------------------------------------------
@@ -120,7 +125,7 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 
 ------------------------------------------------------------------------
 -- Layouts:
-myLayout = tiled ||| Mirror tiled ||| smartBorders Full ||| Circle ||| simpleTabbed
+myLayout = tiled ||| Mirror tiled ||| smartBorders Full ||| Circle ||| simpleTabbed ||| Grid
   where
      tiled	= Tall nmaster delta ratio	-- default tiling algorithm partitions the screen into two panes
      nmaster	= 1				-- The default number of windows in the master pane
@@ -138,9 +143,11 @@ myManageHook = composeAll
     , className =? "Gimp"			--> doFloat	-- Gimp
     , className =? "serverpropertiesdialog"	--> doFloat	-- Opera Site Preferences
     , className =? "ApacheDirectoryStudio"	--> doFloat	-- Apache Directory Studio splash
+	, className =? "jetbrains-idea-ce"	--> doFloat
     , resource  =? "desktop_window"		--> doIgnore
     , resource  =? "kdesktop"			--> doIgnore 
-    , className =? "opera"			--> doShift "1" ] -- Start opera at 1st desktop
+    , className =? "opera"			--> doShift "1"  -- Start opera at 1st desktop
+	]
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
@@ -149,7 +156,7 @@ myFocusFollowsMouse = True
 ------------------------------------------------------------------------
 -- Status bars and logging
 myLogHook = dynamicLogWithPP $ xmobarPP { 
-               ppTitle = xmobarColor "green" "" . shorten 70,
+               ppTitle = xmobarColor "blue" "" . shorten 350,
                ppHiddenNoWindows = xmobarColor "grey" "" 
              }
 ------------------------------------------------------------------------
@@ -159,7 +166,7 @@ myLogHook = dynamicLogWithPP $ xmobarPP {
 -- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
 -- per-workspace layout choices.
 
-myStartupHook = return ()
+--myStartupHook = return ()
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
@@ -185,5 +192,5 @@ defaults = defaultConfig {
         layoutHook         = showWName myLayout,
         manageHook         = myManageHook,
         logHook            = myLogHook,
-        startupHook        = myStartupHook
+        startupHook        = setWMName "LG3D"
     }

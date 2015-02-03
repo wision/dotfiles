@@ -170,6 +170,32 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+alias mon_all='xrandr --output HDMI1 --mode 1920x1080 --output VGA1 --mode 1920x1080 --left-of HDMI1 --output LVDS1 --off'
+alias mon_hdmi='xrandr --output HDMI1 --mode 1920x1080 --output VGA1 --off --output LVDS1 --mode 1366x768 --left-of HDMI1'
+alias mon_vga='xrandr --output VGA1 --mode 1920x1080 --output HDMI1 --off --output LVDS1 --mode 1366x768 --right-of VGA1'
+alias mon_laptop='xrandr --output HDMI1 --off --output VGA1 --off --output LVDS1 --mode 1366x768'
+
+alias slack='~/sbks/slack/nw ~/sbks/slack/slack'
+
+alias pbcopy='xsel --clipboard --input'
+alias pbpaste='xsel --clipboard --output'
+
+alias kdo='dig +short -x'
+alias pmsuspend='sudo pm-suspend'
+
 setxkbmap -layout vok_sk
 
+export PROMPT_COMMAND='
+echo -ne "\033]0;${USER}@${HOSTNAME%%.*}: ${PWD/#$HOME/~}\007"
+'
+export HISTCONTROL=ignoredups:erasedups:ignoreboth
+export HISTSIZE=100000
+export HISTFILESIZE=2000000
+#export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+export NODE_HEAPDUMP_OPTIONS=nosignal
+export EDITOR=vim
+
+function odjebat() {
+    ssh-keygen -R $1 && ssh -o 'StrictHostKeyChecking=no' $1
+}
 
