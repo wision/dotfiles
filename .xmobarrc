@@ -10,10 +10,11 @@ Config { font = "xft:Fixed-8"
 		, Run Memory ["-t","Mem: <usedratio>%","-H","8192","-L","4096","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
 		, Run Swap ["-t","Swap: <usedratio>%","-H","1024","-L","512","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
 		, Run Com "uname" ["-s","-r"] "" 36000
+		, Run Battery ["-t","AC: <acstatus> Battery: <left>%","-L","10","-H","80","--","-O","<fc=green>On</fc>","-o","<fc=red>Off</fc>","-l","red","-m","yellow","-h","green","-p","blue","-f","/sys/class/power_supply/ADP1/online"] 10
 		, Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
 		, Run StdinReader
 		]
 	, sepChar = "%"
 	, alignSep = "}{"
-	, template = "%StdinReader%                  %cpu% | %memory% * %swap% | %eth0% - %wlan0% }{ <fc=#ee9a00>%date%</fc> | %uname%"
+	, template = "%StdinReader% }{ %cpu% | %memory% * %swap% | %eth0% - %wlan0%                                  %battery% | <fc=#ee9a00>%date%</fc> | %uname%"
 	}
