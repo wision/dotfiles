@@ -150,12 +150,6 @@ alias sbks=_sbks
 complete -W "$(echo `sbks && ls | cut -f 1 -d ' ' | uniq | tr '\n' ' '`;)" sbks
 
 
-_hera() {
- #clear
- cd /home/cizekm/sbks/hera/worker/$1
-}
-alias hera=_hera
-complete -W "$(echo `hera && ls | cut -f 1 -d ' ' | uniq | tr '\n' ' '`;)" hera
 
 # PFM
 # enable color support of ls and also add handy aliases
@@ -170,10 +164,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-alias mon_all='xrandr --output HDMI1 --mode 1920x1080 --output VGA1 --mode 1920x1080 --left-of HDMI1 --output LVDS1 --off'
-alias mon_hdmi='xrandr --output HDMI1 --mode 1920x1080 --output VGA1 --off --output LVDS1 --mode 1366x768 --left-of HDMI1'
-alias mon_vga='xrandr --output VGA1 --mode 1920x1080 --output HDMI1 --off --output LVDS1 --mode 1366x768 --right-of VGA1'
-alias mon_laptop='xrandr --output HDMI1 --off --output VGA1 --off --output LVDS1 --mode 1366x768'
+alias mon_vga='xrandr --output DP2 --mode 1920x1080 --output DP1 --off --output HDMI1 --off --output HDMI2 --off --output eDP1 --mode 1600x900 --right-of VGA1 --below DP2'
+alias mon_laptop='xrandr --output DP1 --off --output DP2 --off --output HDMI1 --off --output HDMI2 --off --output eDP1 --mode 1600x900'
 
 alias slack='~/sbks/slack/nw ~/sbks/slack/slack'
 
@@ -194,8 +186,31 @@ export HISTFILESIZE=2000000
 #export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 export NODE_HEAPDUMP_OPTIONS=nosignal
 export EDITOR=vim
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle/jre
 
 function odjebat() {
     ssh-keygen -R $1 && ssh -o 'StrictHostKeyChecking=no' $1
 }
+
+
+GRC=grc
+alias colourify="$GRC -es --colour=auto"
+alias configure='colourify ./configure'
+alias diff='colourify diff'
+alias make='colourify make'
+alias gcc='colourify gcc'
+alias g++='colourify g++'
+alias as='colourify as'
+alias gas='colourify gas'
+alias ld='colourify ld'
+alias netstat='colourify netstat'
+alias ping='colourify ping'
+alias traceroute='colourify /usr/sbin/traceroute'
+alias head='colourify head'
+alias tail='colourify tail'
+alias dig='colourify dig'
+alias mount='colourify mount'
+alias ps='colourify ps'
+alias mtr='colourify mtr'
+alias df='colourify df'
 

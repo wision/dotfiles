@@ -50,8 +50,8 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9","10"]
 --
 --myNormalBorderColor  = "#bd96bd"
 --myFocusedBorderColor = "#ff208c"
-myNormalBorderColor  = "#444"
-myFocusedBorderColor = "#fff"
+myNormalBorderColor  = "#111"
+myFocusedBorderColor = "#555"
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -125,7 +125,7 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 
 ------------------------------------------------------------------------
 -- Layouts:
-myLayout = tiled ||| Mirror tiled ||| smartBorders Full ||| Circle ||| simpleTabbed ||| Grid
+myLayout = Mirror tiled ||| tiled ||| smartBorders Full ||| Circle ||| simpleTabbed ||| Grid
   where
      tiled	= Tall nmaster delta ratio	-- default tiling algorithm partitions the screen into two panes
      nmaster	= 1				-- The default number of windows in the master pane
