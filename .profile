@@ -164,7 +164,8 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-alias mon_vga='xrandr --output DP2 --mode 1920x1080 --output DP1 --off --output HDMI1 --off --output HDMI2 --off --output eDP1 --mode 1600x900 --right-of VGA1 --below DP2'
+alias mon_vga='xrandr --output DP2 --mode 1920x1080 --output DP1 --off --output HDMI1 --off --output HDMI2 --off --output eDP1 --mode 1600x900 --below DP2'
+alias mon_hdmi='xrandr --output HDMI1 --mode 1920x1080 --output DP1 --off --output DP2 --off --output HDMI2 --off --output eDP1 --mode 1600x900 --below HDMI1'
 alias mon_laptop='xrandr --output DP1 --off --output DP2 --off --output HDMI1 --off --output HDMI2 --off --output eDP1 --mode 1600x900'
 
 alias slack='~/sbks/slack/nw ~/sbks/slack/slack'
@@ -211,6 +212,6 @@ alias tail='colourify tail'
 alias dig='colourify dig'
 alias mount='colourify mount'
 alias ps='colourify ps'
-alias mtr='colourify mtr'
+alias mtr='colourify mtr --curs'
 alias df='colourify df'
 
