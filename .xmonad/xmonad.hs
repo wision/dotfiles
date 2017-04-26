@@ -2,7 +2,6 @@ import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Layout.NoBorders
-import XMonad.Layout.Circle	-- circle layout
 import XMonad.Layout.Tabbed	-- tabbed layout
 import XMonad.Layout.ShowWName	-- shows workspace name
 import XMonad.Layout.Grid -- shows workspace name
@@ -87,7 +86,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 --    , ((0                      , 0x1008ff2f), spawn "sudo hibernate-ram &> /dev/null")            -- hibernate
     , ((modMask                , xK_w      ), spawn "wpa_cli scan reassociate")                   -- scan for wi-fi networks and reassociate
     , ((modMask .|. shiftMask  , xK_v      ), spawn "pavucontrol &> /dev/null")                   -- run pavucontrol
---    , ((0                      , xK_Print  ), spawn "scrot -q 100 /tmp/screen_%Y-%m-%d.png -d 1") -- Take screenshot
+    , ((modMask                , xK_Print  ), spawn "scrot -q 100 /tmp/screen_%Y-%m-%d.png -d 1") -- Take screenshot
     -- Audio control: lower,raise,mute
 --    , ((0                      , 0x1008FF11), spawn "pacmd dump|awk --non-decimal-data '$1~/set-sink-volume/{system (\"pacmd \"$1\" \"$2\" \"$3-1000)}'")
 --    , ((0                      , 0x1008FF13), spawn "pacmd dump|awk --non-decimal-data '$1~/set-sink-volume/{system (\"pacmd \"$1\" \"$2\" \"$3+1000)}'")
@@ -125,7 +124,7 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 
 ------------------------------------------------------------------------
 -- Layouts:
-myLayout = Mirror tiled ||| tiled ||| smartBorders Full ||| Circle ||| simpleTabbed ||| Grid
+myLayout = Mirror tiled ||| tiled ||| smartBorders Full ||| simpleTabbed ||| Grid
   where
      tiled	= Tall nmaster delta ratio	-- default tiling algorithm partitions the screen into two panes
      nmaster	= 1				-- The default number of windows in the master pane

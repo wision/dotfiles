@@ -14,6 +14,7 @@
 	Bundle 'gmarik/vundle'
 	"Add your bundles here
 	"Plugin 'Lokaltog/powerline'
+	Plugin 'git@github.com:editorconfig/editorconfig-vim.git'
 	Plugin 'bling/vim-airline'
 	Plugin 'airblade/vim-gitgutter'
 	Plugin 'tpope/vim-fugitive'
@@ -21,7 +22,10 @@
 	Plugin 'vim-scripts/twilight256.vim'
 	Plugin 'wincent/Command-T'
 	Plugin 'terryma/vim-multiple-cursors'
+	Plugin 'ciaranm/detectindent'
 	Plugin 'git@github.com:vim-scripts/AnsiEsc.vim.git'
+	Plugin 'isRuslan/vim-es6'
+	Plugin 'henrik/vim-indexed-search'
 	Bundle 'mattn/webapi-vim'
 	Bundle 'mattn/gist-vim'
 	Bundle 'derekwyatt/vim-scala'
@@ -70,7 +74,7 @@ set shiftwidth=4
 "set smarttab
 set noexpandtab
 set tabstop=4
-"set mouse=a
+set mouse=a
 set wildmenu
 set hls
 set nowritebackup
@@ -186,8 +190,9 @@ endfun
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
-  autocmd FileType c,cpp,java,php,ruby,python,js,coffee,scala autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+  autocmd FileType c,cpp,java,php,ruby,python,js,cjsx,jsx,coffee,scala autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
   autocmd BufEnter * :syntax sync fromstart
+  autocmd BufRead,BufNewFile *.cjsx set filetype=coffee
 
   " Enable file type detection.
   " Use the default filetype settings, so that mail gets 'tw' set to 72,

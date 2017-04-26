@@ -22,6 +22,10 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+if [ -d "$HOME/.linuxbrew" ] ; then
+    PATH="$HOME/.linuxbrew/bin:$PATH"
+fi
+
 function _jenkins() {
     local cur tasks
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -122,6 +126,18 @@ PathFull="\W"
 NewLine="\n"
 Jobs="\j"
 
+function node_version_alert() {
+	if [ -f package.json ]; then
+		DESIRED_NODE_VERSION=$(cat package.json | grep "\"node\"" | awk {'print $2'} | tr -d "\"^,")
+		NODE_VERSION=$(node -v | tr -d v)
+		# DESIRED_NPM_VERSION=$(cat package.json | grep "\"npm\"" | awk {'print $2'} | tr -d "\"^")
+		# NPM_VERSION=$(npm -v)
+		if [[ "$NODE_VERSION" != *"$DESIRED_NODE_VERSION"* ]]; then
+			echo "node $DESIRED_NODE_VERSION "
+		fi
+	fi
+}
+
 
 # This PS1 snippet was adopted from code for MAC/BSD I saw from: http://allancraig.net/index.php?option=com_content&view=article&id=108:ps1-export-command-for-git&catid=45:general&Itemid=96
 # I tweaked it to work on UBUNTU 11.04 & 11.10 plus made it mo' better
@@ -131,15 +147,16 @@ if [ $? -eq 0 ]; then \
   echo " '$BBlue$PathShort$Color_Off'$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
     # @4 - Clean repository - nothing to commit
-    echo "'$Green'"$(__git_ps1 " (%s)"'$Color_Off'); \
+    echo "'$Green'"$(__git_ps1 " (%s) '$IRed'$(node_version_alert)"'$Color_Off'); \
   else \
     # @5 - Changes to working tree
-    echo "'$IRed'"$(__git_ps1 " [%s]"'$Color_Off'); \
+    echo "'$IRed'"$(__git_ps1 " [%s] '$IRed'$(node_version_alert)"'$Color_Off'); \
   fi)\$ "; \
 else \
   # @2 - Prompt when not in GIT repo
   echo " '$BBlue$PathShort$Color_Off'\$ "; \
-fi)'
+fi
+)'
 
 
 _sbks() {
@@ -149,6 +166,54 @@ _sbks() {
 alias sbks=_sbks
 complete -W "$(echo `sbks && ls | cut -f 1 -d ' ' | uniq | tr '\n' ' '`;)" sbks
 
+
+connect_pg ()
+{
+    CONNSTR=$1;
+    if [ -z "$1" ]; then
+        if [ -f .env ]; then
+            PGS=(`grep PG .env`);
+        else
+            PGS=();
+        fi;
+        if [ ${#PGS[@]} == 0 ]; then
+            echo "input connstr:";
+            read CONNSTR;
+        else
+            if [ ${#PGS[@]} == 1 ]; then
+                CONNSTR=${PGS[0]};
+            else
+                echo "which db?";
+                for X in $(seq ${#PGS[@]});
+                do
+                    echo "[$X] - ${PGS[$X-1]}";
+                done;
+                read IDX;
+                CONNSTR=${PGS[$IDX-1]};
+            fi;
+        fi;
+    fi;
+    printf "\n\n=====================================================================";
+    printf "\nUsing:";
+    printf "\n\e[1m\e[93m${CONNSTR}\e[0m";
+    printf "\n=====================================================================\n\n";
+    CONNSTR=${CONNSTR#*//};
+    USER=${CONNSTR%%:*};
+    CONNSTR=${CONNSTR#*:};
+    PASS=${CONNSTR%%@*};
+    CONNSTR=${CONNSTR#*@};
+    if [[ $CONNSTR == *":"* ]]; then
+        HOST=${CONNSTR%:*};
+        CONNSTR=${CONNSTR#*:};
+        PORT=${CONNSTR%/*};
+        CONNSTR=${CONNSTR##*/};
+    else
+        HOST=${CONNSTR%/*};
+        CONNSTR=${CONNSTR##*/};
+    fi
+    DB=${CONNSTR%\?*};
+    PGPASSWORD=$PASS psql -h $HOST -U $USER $DB
+}
 
 
 # PFM
@@ -164,17 +229,21 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-alias mon_vga='xrandr --output DP2 --mode 1920x1080 --output DP1 --off --output HDMI1 --off --output HDMI2 --off --output eDP1 --mode 1600x900 --below DP2'
-alias mon_hdmi='xrandr --output HDMI1 --mode 1920x1080 --output DP1 --off --output DP2 --off --output HDMI2 --off --output eDP1 --mode 1600x900 --below HDMI1'
-alias mon_laptop='xrandr --output DP1 --off --output DP2 --off --output HDMI1 --off --output HDMI2 --off --output eDP1 --mode 1600x900'
+alias mon_vga='xrandr --output DP-2 --mode 1920x1080 --output DP-1 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --mode 1600x900 --below DP-2'
+alias mon_vga_only='xrandr --output DP-2 --mode 1920x1080 --output DP-1 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --off'
+alias mon_hdmi='xrandr --output HDMI-1 --mode 1920x1080 --output DP-1 --off --output DP-2 --off --output HDMI-2 --off --output eDP-1 --mode 1600x900 --below HDMI-1'
+alias mon_hdmi_only='xrandr --output HDMI-1 --mode 1920x1080 --output DP-1 --off --output DP-2 --off --output HDMI-2 --off --output eDP-1 --off'
+alias mon_laptop='xrandr --output DP-1 --off --output DP-2 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --mode 1600x900'
+alias mon_dp_only='xrandr --output DP-1 --mode 1920x1200 --output DP-1 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --off'
 
-alias slack='~/sbks/slack/nw ~/sbks/slack/slack'
 
-alias pbcopy='xsel --clipboard --input'
-alias pbpaste='xsel --clipboard --output'
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
 
 alias kdo='dig +short -x'
 alias pmsuspend='sudo pm-suspend'
+
+alias killchrome='ps ux | grep '\''[C]hrome Helper --type=renderer'\'' | grep -v extension-process | awk '\''{print $2}'\'''
 
 setxkbmap -layout vok_sk
 
@@ -212,6 +281,10 @@ alias tail='colourify tail'
 alias dig='colourify dig'
 alias mount='colourify mount'
 alias ps='colourify ps'
-alias mtr='colourify mtr --curs'
+#alias mtr='colourify mtr --curses'
+alias mtr='mtr --curses'
 alias df='colourify df'
 
+alias pendolino="curl -H 'Host: www.imbord.info' 'https://10.0.1.254/hotspot/hotspot.cgi?method=login&username=lab&password=CAEN&realm=lab' -kIL"
+
+export CHROMIUM_FLAGS=--enable-remote-extensions
