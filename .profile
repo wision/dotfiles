@@ -287,4 +287,5 @@ alias df='colourify df'
 
 alias pendolino="curl -H 'Host: www.imbord.info' 'https://10.0.1.254/hotspot/hotspot.cgi?method=login&username=lab&password=CAEN&realm=lab' -kIL"
 
+export MARATONEC_TOKEN=9uM7PBqy8yJJsKeUNMzP
 export CHROMIUM_FLAGS=--enable-remote-extensions

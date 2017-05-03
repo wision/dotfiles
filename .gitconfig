@@ -1,0 +1,22 @@
+[core]
+	editor = vim
+	excludesfile = /home/cizekm/.gitignore_global
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	ui = auto
+[format]
+	#pretty = "Commit:  %C(yellow)%H%nAuthor:  %C(green)%aN <%aE>%nDate:    (%C(red)%ar%Creset) %ai%nSubject: %s%n%n%b"
+	pretty = "%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset"
+[user]
+	email = martin.cizek@socialbakers.com
+	name = Martin Cizek
+[alias]
+	st = status -sb
+	br = branch
+	ci = commit
+	co = checkout
+	l = log --all --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+[github]
+	user = wision
