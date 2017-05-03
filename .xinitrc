@@ -12,4 +12,4 @@ xsetroot -cursor_name left_ptr
 xscreensaver &> /dev/null &
 
 #exec ck-launch-session dbus-launch --sh-syntax --exit-with-session xmonad
-xmonad
+exec xmonad
