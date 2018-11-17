@@ -22,7 +22,6 @@
 	Plugin 'vim-scripts/twilight256.vim'
 	Plugin 'wincent/Command-T'
 	Plugin 'terryma/vim-multiple-cursors'
-	Plugin 'ciaranm/detectindent'
 	Plugin 'vim-scripts/AnsiEsc.vim'
 	Plugin 'isRuslan/vim-es6'
 	Plugin 'henrik/vim-indexed-search'
@@ -31,6 +30,7 @@
 	Bundle 'mattn/gist-vim'
 	Bundle 'derekwyatt/vim-scala'
 	Bundle 'kchmck/vim-coffee-script'
+	Bundle 'leafgarland/typescript-vim'
 
 	"...All your other bundles...
 	if iCanHazVundle == 0

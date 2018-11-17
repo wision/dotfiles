@@ -26,6 +26,10 @@ if [ -d "$HOME/.linuxbrew" ] ; then
     PATH="$HOME/.linuxbrew/bin:$PATH"
 fi
 
+if [ -d "$HOME/sbks" ] ; then
+    PATH="$HOME/sbks/arcanist/bin/:$PATH"
+fi
+
 function _jenkins() {
     local cur tasks
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -42,6 +46,7 @@ function _jenkins() {
 complete -o default -F _jenkins jenkins c
 
 [[ -s /home/cizekm/.nvm/nvm.sh ]] && . /home/cizekm/.nvm/nvm.sh # This loads NVM
+export NODE_EXTRA_CA_CERTS=/home/cizekm/Downloads/SBKSAdminCA.pem
 
 
 # Reset
@@ -127,15 +132,21 @@ NewLine="\n"
 Jobs="\j"
 
 function node_version_alert() {
-	if [ -f package.json ]; then
-		DESIRED_NODE_VERSION=$(cat package.json | grep "\"node\"" | awk {'print $2'} | tr -d "\"^,")
-		NODE_VERSION=$(node -v | tr -d v)
-		# DESIRED_NPM_VERSION=$(cat package.json | grep "\"npm\"" | awk {'print $2'} | tr -d "\"^")
-		# NPM_VERSION=$(npm -v)
-		if [[ "$NODE_VERSION" != *"$DESIRED_NODE_VERSION"* ]]; then
-			echo "node $DESIRED_NODE_VERSION "
-		fi
-	fi
+    if [ -f package.json ]; then
+        DESIRED_NODE_VERSION=$(cat package.json | grep "\"node\"" | awk {'print $2'} | tr -d "\"^,")
+        NODE_VERSION=$(node -v | tr -d v)
+        # DESIRED_NPM_VERSION=$(cat package.json | grep "\"npm\"" | awk {'print $2'} | tr -d "\"^")
+        # NPM_VERSION=$(npm -v)
+        if [[ "$NODE_VERSION" != *"$DESIRED_NODE_VERSION"* ]]; then
+            echo "node $DESIRED_NODE_VERSION "
+        fi
+    fi
+}
+
+function sbks_env() {
+    if [ -f .env ]; then
+        echo " $(cat .env | grep "ENVIRONMENT_NAME=" | cut -f 2 -d '=')"
+    fi
 }
 
 
@@ -144,17 +155,17 @@ function node_version_alert() {
 
 export PS1=$IBlack$Time24h$Color_Off'$(git branch &>/dev/null;\
 if [ $? -eq 0 ]; then \
-  echo " '$BBlue$PathShort$Color_Off'$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
-  if [ "$?" -eq "0" ]; then \
-    # @4 - Clean repository - nothing to commit
-    echo "'$Green'"$(__git_ps1 " (%s) '$IRed'$(node_version_alert)"'$Color_Off'); \
-  else \
-    # @5 - Changes to working tree
-    echo "'$IRed'"$(__git_ps1 " [%s] '$IRed'$(node_version_alert)"'$Color_Off'); \
-  fi)\$ "; \
+    echo " '$BBlue$PathShort$Color_Off$Yellow'$(sbks_env)'$Color_Off'$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
+    if [ "$?" -eq "0" ]; then \
+        # @4 - Clean repository - nothing to commit
+        echo "'$Green'"$(__git_ps1 " (%s) '$IRed'$(node_version_alert)"'$Color_Off'); \
+    else \
+        # @5 - Changes to working tree
+        echo "'$IRed'"$(__git_ps1 " [%s] '$IRed'$(node_version_alert)"'$Color_Off'); \
+    fi)\$ "; \
 else \
-  # @2 - Prompt when not in GIT repo
-  echo " '$BBlue$PathShort$Color_Off'\$ "; \
+    # @2 - Prompt when not in GIT repo
+    echo " '$BBlue$PathShort$Color_Off'\$ "; \
 fi
 )'
 
@@ -233,7 +244,7 @@ alias mon_vga='xrandr --output DP-2 --mode 1920x1080 --output DP-1 --off --outpu
 alias mon_vga_only='xrandr --output DP-2 --mode 1920x1080 --output DP-1 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --off'
 alias mon_hdmi='xrandr --output HDMI-1 --mode 1920x1080 --output DP-1 --off --output DP-2 --off --output HDMI-2 --off --output eDP-1 --mode 1600x900 --below HDMI-1'
 alias mon_hdmi_only='xrandr --output HDMI-1 --mode 1920x1080 --output DP-1 --off --output DP-2 --off --output HDMI-2 --off --output eDP-1 --off'
-alias mon_laptop='xrandr --output DP-1 --off --output DP-2 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --mode 1600x900'
+alias mon_laptop='xrandr --output DP-1 --off --output DP-2 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --mode 1920x1080'
 alias mon_dp_only='xrandr --output DP-1 --mode 1920x1200 --output DP-1 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --off'
 
 
