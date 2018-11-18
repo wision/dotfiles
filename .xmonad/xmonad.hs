@@ -7,6 +7,7 @@ import XMonad.Layout.ShowWName	-- shows workspace name
 import XMonad.Layout.Grid -- shows workspace name
 import XMonad.Actions.CycleWS
 import XMonad.Actions.SwapWorkspaces
+import Graphics.X11.ExtraTypes.XF86
 
 --import XMonad.Hooks.ICCCMFocus
 import XMonad.Hooks.SetWMName
@@ -81,11 +82,16 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask                , xK_Left   ), prevWS)                              -- switch to previous workspace
     , ((modMask                , xK_Right  ), nextWS)                              -- switch to next workspace
 --    , ((modMask .|. shiftMask  , xK_q      ), io (exitWith ExitSuccess))                          -- XMonad quit
-    , ((modMask .|. shiftMask  , xK_b      ), spawn "killall -s SIGUSR1 xmobar &> /dev/null")     -- Switch xmobar to next screen
+    , ((0                      , xF86XK_AudioMute        ), spawn "pactl set-sink-mute 2 toggle")     -- mute volume
+    , ((0                      , xF86XK_AudioLowerVolume ), spawn "pactl set-sink-volume 2 -10%")     -- decrease volume
+    , ((0                      , xF86XK_AudioRaiseVolume ), spawn "pactl set-sink-volume 2 +10%")     -- increase volume
+
+    , ((0                      , xF86XK_MonBrightnessDown ), spawn "xbacklight -dec 10")     -- lower brightness
+    , ((0                      , xF86XK_MonBrightnessUp   ), spawn "xbacklight -inc 10")     -- higher brightness
     , ((modMask                , xK_x      ), spawn "xscreensaver-command -lock")                 -- lock session with xscreensaver
 --    , ((0                      , 0x1008ff2f), spawn "sudo hibernate-ram &> /dev/null")            -- hibernate
-    , ((modMask                , xK_w      ), spawn "wpa_cli scan reassociate")                   -- scan for wi-fi networks and reassociate
-    , ((modMask .|. shiftMask  , xK_v      ), spawn "pavucontrol &> /dev/null")                   -- run pavucontrol
+--    , ((modMask                , xK_w      ), spawn "wpa_cli scan reassociate")                   -- scan for wi-fi networks and reassociate
+    , ((modMask .|. shiftMask  , xK_v      ), spawn "pavucontrol-qt &> /dev/null")                   -- run pavucontrol
     , ((modMask                , xK_Print  ), spawn "scrot -q 100 /tmp/screen_%Y-%m-%d.png -d 1") -- Take screenshot
     -- Audio control: lower,raise,mute
 --    , ((0                      , 0x1008FF11), spawn "pacmd dump|awk --non-decimal-data '$1~/set-sink-volume/{system (\"pacmd \"$1\" \"$2\" \"$3-1000)}'")
