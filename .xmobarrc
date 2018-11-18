@@ -4,8 +4,9 @@ Config { font = "xft:Fixed-8"
 	, position = Top
 	, lowerOnStart = True
 	, commands = [
-		  Run Network "eth0" ["-t","eth0: <rx> / <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
-		, Run Network "wlan0" ["-t","wlan0: <rx> / <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
+		  Run Network "enp0s31f6" ["-t","<rx> / <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
+		, Run Network "wlp61s0" ["-t","<rx> / <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
+		, Run Wireless "wlp61s0" ["-t","ssid: <essid>"] 10
 		, Run Cpu ["-L","30","-H","60","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC","-w","3"] 10
 		, Run Memory ["-t","Mem: <usedratio>%","-H","8192","-L","4096","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
 		, Run Swap ["-t","Swap: <usedratio>%","-H","1024","-L","512","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
@@ -16,5 +17,5 @@ Config { font = "xft:Fixed-8"
 		]
 	, sepChar = "%"
 	, alignSep = "}{"
-	, template = "%StdinReader% }{ %cpu% | %memory% * %swap% | %eth0% - %wlan0%                                  %battery% | <fc=#ee9a00>%date%</fc> | %uname%"
+	, template = "%StdinReader% }{ %cpu%   |   %memory% - %swap%   |   enp0s31f6: %enp0s31f6%   |   wlp61s0: %wlp61s0%   |   %wlp61s0wi%                                  %battery%   |   <fc=#ee9a00>%date%</fc>  |   %uname%"
 	}
