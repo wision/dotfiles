@@ -1,45 +1,51 @@
 ! Defaults for all xterm clients
-xterm*background:	black
-xterm*foreground:	white
+xterm*background:		black
+xterm*foreground:		white
 xterm*highlightColor:	darkgrey
-xterm*utf8:		2
-!XTerm*utf8Title:	1
-xterm*saveLines:	50000
-xterm*loginShell:	true
-xterm*cursorColor:	white
-xterm*charClass:	33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
-xterm*faceName:		Deja Vu Sans Mono for Powerline
-!xterm*faceName:		Deja Vu Sans Mono
-xterm*faceSize:		8
-xterm*eightBitInput: true
+xterm*utf8:				2
+!XTerm*utf8Title:		1
+xterm*saveLines:		100000
+xterm*loginShell:		true
+xterm*cursorColor:		white
+xterm*charClass:		33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
+xterm*faceName:			DejaVu Sans Mono for Book
+!xterm*faceName:			DejaVu Sans Mono
+xterm*faceSize:			9
+xterm*eightBitInput:	true
 !xterm*termName:		xterm-256color
-!XTerm*xftAntialias:	1
+xterm*xftAntialias:		1
+xterm*scrollBar:		true
+xterm*rightScrollBar:	true
+xterm*scrollbar.width:	4
+xterm*scrollTtyOutput:	false
+xterm*on3Clicks:		regex .*$
+xterm*on4Clicks:		all
 
 ! xscreensaver ---------------------------------------------------------------
 !font settings
-xscreensaver.Dialog.headingFont:        -*-dina-bold-r-*-*-12-*-*-*-*-*-*-*
-xscreensaver.Dialog.bodyFont:           -*-dina-medium-r-*-*-12-*-*-*-*-*-*-*
-xscreensaver.Dialog.labelFont:          -*-dina-medium-r-*-*-12-*-*-*-*-*-*-*
-xscreensaver.Dialog.unameFont:          -*-dina-medium-r-*-*-12-*-*-*-*-*-*-*
-xscreensaver.Dialog.buttonFont:         -*-dina-bold-r-*-*-12-*-*-*-*-*-*-*
-xscreensaver.Dialog.dateFont:           -*-dina-medium-r-*-*-12-*-*-*-*-*-*-*
-xscreensaver.passwd.passwdFont:         -*-dina-bold-r-*-*-12-*-*-*-*-*-*-*
+xscreensaver.Dialog.headingFont:        -*-*-bold-r-*-*-14-*-*-*-*-*-*-*
+xscreensaver.Dialog.bodyFont:           -*-*-medium-r-*-*-14-*-*-*-*-*-*-*
+xscreensaver.Dialog.labelFont:          -*-*-medium-r-*-*-14-*-*-*-*-*-*-*
+xscreensaver.Dialog.unameFont:          -*-*-medium-r-*-*-14-*-*-*-*-*-*-*
+xscreensaver.Dialog.buttonFont:         -*-*-bold-r-*-*-14-*-*-*-*-*-*-*
+xscreensaver.Dialog.dateFont:           -*-*-medium-r-*-*-14-*-*-*-*-*-*-*
+xscreensaver.passwd.passwdFont:         -*-*-bold-r-*-*-14-*-*-*-*-*-*-*
 !general dialog box (affects main hostname, username, password text)
-xscreensaver.Dialog.foreground:         #ffffff
-xscreensaver.Dialog.background:         #111111
-xscreensaver.Dialog.topShadowColor:     #111111
-xscreensaver.Dialog.bottomShadowColor:  #111111
-xscreensaver.Dialog.Button.foreground:  #666666
-xscreensaver.Dialog.Button.background:  #ffffff
+xscreensaver.Dialog.foreground:         #EDEDED
+xscreensaver.Dialog.background:         #202020
+xscreensaver.Dialog.topShadowColor:     #202024
+xscreensaver.Dialog.bottomShadowColor:  #202024
+xscreensaver.Dialog.Button.foreground:  #EDEDFF
+xscreensaver.Dialog.Button.background:  #444
 !username/password input box and date text colour
-xscreensaver.Dialog.text.foreground:    #666666
-xscreensaver.Dialog.text.background:    #ffffff
+xscreensaver.Dialog.text.foreground:    #EDEDFF
+xscreensaver.Dialog.text.background:    #444
 xscreensaver.Dialog.internalBorderWidth:24
-xscreensaver.Dialog.borderWidth:        20
+xscreensaver.Dialog.borderWidth:        0
 xscreensaver.Dialog.shadowThickness:    2
 !timeout bar (background is actually determined by Dialog.text.background)
-xscreensaver.passwd.thermometer.foreground:  #ff0000
-xscreensaver.passwd.thermometer.background:  #000000
+xscreensaver.passwd.thermometer.foreground:  #A9B7C4
+xscreensaver.passwd.thermometer.background:  #202020
 xscreensaver.passwd.thermometer.width:       8
 !datestamp format--see the strftime(3) manual page for details
 xscreensaver.dateFormat:    %I:%M%P %a %b %d, %Y
@@ -47,26 +53,29 @@ xscreensaver.dateFormat:    %I:%M%P %a %b %d, %Y
 !-------------------------------------------------------------------------------
 ! xmessage
 !Xmessage*font: -xos4-terminus-*-*-*-*-*-*-*-*-*-*-iso8859-2
-Xmessage*background: #3F3F3F
-Xmessage*foreground: #F0DFAF
-Xmessage*form.*.shapeStyle: rectangle
-Xmessage*Scrollbar.width: 1
-Xmessage*Scrollbar.borderWidth: 0
-!Xmessage.form.message.Scroll: WhenNeeded
-!Xmessage*Buttons: Quit
-!Xmessage*defaultButton: Quit
-!Xmessage*geometry: +20+20
-*VT100.Translations: #override \
-	Shift <Key>Up: scroll-back(1) \n\
-	Shift <Key>Down: scroll-forw(1) \n\
-	Ctrl Shift <KeyPress> C:  copy-selection(CLIPBOARD) \n\
-	Ctrl Shift <KeyPress> V:  insert-selection(CLIPBOARD)
+xmessage*background: #3F3F3F
+xmessage*foreground: #F0DFAF
+xmessage*form.*.shapeStyle: rectangle
+xmessage*Scrollbar.width: 1
+xmessage*Scrollbar.borderWidth: 0
+!xmessage.form.message.Scroll: WhenNeeded
+!xmessage*Buttons: Quit
+!xmessage*defaultButton: Quit
+!xmessage*geometry: +20+20
+
+*vt100.translations: #override \
+	Shift <Key>Up:				scroll-back(1) \n\
+	Shift <Key>Down:			scroll-forw(1) \n\
+	Shift <Key>Home:			scroll-back(100000) \n\
+	Shift <Key>End:				scroll-forw(100000) \n\
+	Ctrl Shift <KeyPress> C:	copy-selection(CLIPBOARD) \n\
+	Ctrl Shift <KeyPress> V:	insert-selection(CLIPBOARD)
  
 !-------------------------------------------------------------------------------
 ! xcursor
-Xcursor.theme: whiteglass
+xcursor.theme: whiteglass
 
-Xft.dpi:        96
+Xft.dpi:        110
 Xft.antialias:  true
 Xft.rgba:       rgb
 Xft.hinting:    true
