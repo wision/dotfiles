@@ -58,6 +58,7 @@ myFocusedBorderColor = "#555"
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask .|. shiftMask  , xK_Return ), spawn $ XMonad.terminal conf)			  -- launch a terminal
 --    , ((modMask                , xK_p      ), spawn "gmrun")					  -- launch gmrun
+    , ((modMask .|. shiftMask  , xK_f     ), spawn "xterm -e sh -c \"xsel -p -o | less\"")	  -- search through clipboard
     , ((modMask                , xK_F2     ), spawn "exe=`dmenu_run`  && eval \"exec $exe\"")	  -- launch dmenu
     , ((modMask .|. shiftMask  , xK_c      ), kill)						  -- Close focused window 
     , ((modMask                , xK_space  ), sendMessage NextLayout)				  -- Rotate through the available layout algorithms
