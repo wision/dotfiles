@@ -83,9 +83,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask                , xK_Left   ), prevWS)                              -- switch to previous workspace
     , ((modMask                , xK_Right  ), nextWS)                              -- switch to next workspace
 --    , ((modMask .|. shiftMask  , xK_q      ), io (exitWith ExitSuccess))                          -- XMonad quit
-    , ((0                      , xF86XK_AudioMute        ), spawn "pactl set-sink-mute 2 toggle")     -- mute volume
-    , ((0                      , xF86XK_AudioLowerVolume ), spawn "pactl set-sink-volume 2 -10%")     -- decrease volume
-    , ((0                      , xF86XK_AudioRaiseVolume ), spawn "pactl set-sink-volume 2 +10%")     -- increase volume
+    , ((0                      , xF86XK_AudioMute        ), spawn "pactl set-sink-mute 0 toggle")     -- mute volume
+    , ((0                      , xF86XK_AudioLowerVolume ), spawn "pactl set-sink-volume 0 -10%")     -- decrease volume
+    , ((0                      , xF86XK_AudioRaiseVolume ), spawn "pactl set-sink-volume 0 +10%")     -- increase volume
 
     , ((0                      , xF86XK_MonBrightnessDown ), spawn "xbacklight -dec 10")     -- lower brightness
     , ((0                      , xF86XK_MonBrightnessUp   ), spawn "xbacklight -inc 10")     -- higher brightness
