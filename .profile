@@ -154,6 +154,7 @@ function sbks_env() {
 # I tweaked it to work on UBUNTU 11.04 & 11.10 plus made it mo' better
 
 source /etc/bash_completion.d/git-prompt
+source ~/git-completion.bash
 export PS1=$IBlack$Time24h$Color_Off'$(git branch &>/dev/null;\
 if [ $? -eq 0 ]; then \
     echo " '$BBlue$PathShort$Color_Off$Yellow'$(sbks_env)'$Color_Off'$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
@@ -253,7 +254,8 @@ alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 
 alias kdo='dig +short -x'
-alias pmsuspend='sudo pm-suspend'
+alias pmsuspend='xscreensaver-command --lock && sudo pm-suspend'
+alias pmhibernate='xscreensaver-command --lock && sudo pm-suspend-hibernate'
 
 alias killchrome='ps ux | grep '\''[C]hrome Helper --type=renderer'\'' | grep -v extension-process | awk '\''{print $2}'\'''
 
