@@ -19,12 +19,13 @@
 	Plugin 'airblade/vim-gitgutter'
 	Plugin 'tpope/vim-fugitive'
 	Plugin 'scrooloose/nerdtree'
-	Plugin 'vim-scripts/twilight256.vim'
 	Plugin 'wincent/Command-T'
 	Plugin 'terryma/vim-multiple-cursors'
 	Plugin 'vim-scripts/AnsiEsc.vim'
 	Plugin 'isRuslan/vim-es6'
 	Plugin 'henrik/vim-indexed-search'
+	Plugin 'ap/vim-css-color'
+	Bundle 'vim-scripts/twilight'
 	Bundle 'tpope/vim-sleuth'
 	Bundle 'mattn/webapi-vim'
 	Bundle 'mattn/gist-vim'
@@ -87,7 +88,6 @@ set background=dark
 set listchars=tab:▸—,eol:.,nbsp:_
 set incsearch
 set scrolloff=1000              " center cursor vertically
-colors peachpuff
 set tabpagemax=30
 "set backup
 "set backupdir=~/.vimbackups/
@@ -226,22 +226,36 @@ else
 endif " has("autocmd")
 
 
-colors twilight256
+colors twilight
 
-hi SpecialKey ctermfg=234
-hi Pmenu ctermbg=235 ctermfg=white
-
-hi LineNr       ctermbg=black          ctermfg=245
-hi Visual       ctermbg=235            ctermfg=246            cterm=bold
-hi Search       ctermbg=darkgray       ctermfg=black
+hi normal       ctermbg=black                             guibg=black
+hi Pmenu        ctermbg=235            ctermfg=white
+hi LineNr       ctermbg=black          ctermfg=245        guibg=black
+hi Visual       ctermbg=235            ctermfg=246
+hi Search       ctermbg=darkgray       ctermfg=black      guibg=#bbbbbb       guifg=#000000
 hi StatusLine   ctermbg=white          ctermfg=black
 hi SignColumn   ctermbg=black
-hi ColorColumn  ctermbg=234
+hi ColorColumn  ctermbg=234                               guibg=#333333
+
+hi Comment        guibg=#000000
+hi TODO           guibg=#000000
+hi Title          guibg=#000000
+hi Constant       guibg=#000000
+hi String         guibg=#000000
+hi Special        guibg=#000000
+hi SpecialKey     guibg=#000000
+hi Identifier     guibg=#000000
+hi Statement      guibg=#000000
+hi Conditional    guibg=#000000
+hi Repeat         guibg=#000000
+hi Structure      guibg=#000000
+hi Function       guibg=#000000
+hi PreProc        guibg=#000000
+hi Operator       guibg=#000000
+hi Type           guibg=#000000
+hi NonText        guibg=#000000
+
 
 set colorcolumn=81
 "let &colorcolumn=join(range(81,999),",")
-
-
-
-
-
+set termguicolors
