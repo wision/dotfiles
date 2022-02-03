@@ -30,23 +30,81 @@ if [ -d "$HOME/sbks" ] ; then
     PATH="$HOME/sbks/arcanist/bin/:$PATH"
 fi
 
-function _jenkins() {
-    local cur tasks
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    tasks="$(~/bin/jenkins --jobs)"
-    # if [ $COMP_CWORD -eq 1 ]; then
-        # Task name completion for first argument.
-        COMPREPLY=( $(compgen -W "$tasks" $cur) )
-    # else
-        # File name completion for other arguments.
-        # COMPREPLY=( $(compgen -f $cur) )
-    # fi
- 
+PROJECTS_DIR=/home/cizekm/sbks
+complete -W "$(ls "$PROJECTS_DIR/")" c
+
+function c(){
+	local proj connstring
+	declare -x FZF_DEFAULT_OPTS
+	proj="$PROJECTS_DIR/$1"
+	FZF_DEFAULT_OPTS="--with-nth 1,2,4.. -d '[:@]' -e --ansi --layout=reverse --color=16 --inline-info --header='Select mongo, mysql or postgresql connection string'"
+	[[ $# -eq 0 ]] && proj=$PWD
+	if [[ "$1" == "all" ]]
+	then
+		cd "$PROJECTS_DIR/maratonec"
+		connstring=$(grep PG_MARATONEC .env | cut -f 2- -d '=')
+		declare -x PGHOST PGPORT PGUSER PGPASSWORD PGDATABASE temp1 temp2
+		temp1=$(awk -F '[/@]' '{print $4}' <<<"$connstring")
+		temp2=$(awk -F ':' '{print $2}' <<<"$temp1")
+		PGUSER=$(    awk -F '[:/]' '{print $4}' <<<"$connstring")
+		PGPASSWORD=$(awk -F '[:@]' '{print $3}' <<<"$connstring")
+		PGDATABASE=$(awk -F '[/?]' '{print $4}' <<<"$connstring")
+		PGHOST=$(awk -F ':' '{print $1}' <<<"$temp1")
+		PGPORT=${temp2:=5432}
+		connstring=$( ${CMD_PG:-psql} -A -t -F = -c "SELECT id, string FROM connection WHERE string ~ '^(p(g|(g)?sql|ostgres(ql)?)|redis|mongodb|mysql|amqp|zk)://'" | fzf | cut -f 2- -d '=')
+	else
+		cd "$proj"
+		[[ ! -s .env ]] && { echo 1>&2 "There's no .env file or it's empty"; return; }
+		connstring=$(grep -E 'pg|psql|pgsql|postgres|redis|mysql|mongo|amqp|zk' .env | fzf | cut -f 2- -d '=')
+	fi
+	case $connstring in
+		mongodb://*)
+			append="&readPreference=secondaryPreferred&appName=connect%20%28mongo%29%20-%20$USER"
+			${CMD_MONGO:-mongo} $MONGO_EXTRA_OPTS "$connstring$append"
+			;;
+		mysql://*)
+			local my_cnf user pass host db
+			my_cnf=$(mktemp -u)
+			user=$(awk -F '[:/]'  '{print $4}' <<<"$connstring")
+			pass=$(awk -F '[:@]'  '{print $3}' <<<"$connstring")
+			host=$(awk -F '[/@]'  '{print $4}' <<<"$connstring")
+			db=$(  awk -F '/'     '{print $4}' <<<"$connstring")
+			mkfifo "$my_cnf"
+			( echo -e "[client]\nhost='$host'\nuser='$user'\npassword='$pass'\ndatabase='$db'" > "$my_cnf" & )
+			${CMD_MYSQL:-mysql} --defaults-file="$my_cnf" -C -A $MYSQL_EXTRA_OPTS
+			rm -f "$my_cnf"
+		;;
+		amqp://*)
+			url=$(awk -F '[:/@]' '{print "http://"$6":15672/#/login/"$4"/"$5}' <<<$connstring)
+			${CMD_RABBIT:-open} "$url"
+		;;
+		pg://*|psql://*|pgsql://|postgres://*|postgresql://)
+			declare -x PGAPPNAME PGHOST PGPORT PGUSER PGPASSWORD PGDATABASE PSQLRC temp1 temp2
+			temp1=$(awk -F '[/@]' '{print $4}' <<<"$connstring")
+			temp2=$(awk -F ':' '{print $2}' <<<"$temp1")
+			PGAPPNAME="connect (psql) - $USER"
+			PGUSER=$(    awk -F '[:/]' '{print $4}' <<<"$connstring")
+			PGPASSWORD=$(awk -F '[:@]' '{print $3}' <<<"$connstring")
+			PGDATABASE=$(awk -F '[/?]' '{print $4}' <<<"$connstring")
+			PGHOST=$(awk -F ':' '{print $1}' <<<"$temp1")
+			PGPORT=${temp2:=5432}
+			${CMD_PG:-psql} $PG_EXTRA_OPTS
+		;;
+		redis://*)
+			local host port
+			host=$(awk -F '[/:]' '{print $4}' <<<"$connstring")
+			port=$(awk -F '[/:]' '{print $5}' <<<"$connstring")
+			${P_REDIS_CMD:-redis-cli} -h "$host" -p "${port:-6379}"
+		 ;;
+		zk://*)
+			${P_ZK_CMD:-zk-shell} "$(awk -F '[:/]' '{print $4}' <<<"$connstring")"
+		;;
+	esac
+	cd -
 }
-complete -o default -F _jenkins jenkins c
 
 [[ -s /home/cizekm/.nvm/nvm.sh ]] && . /home/cizekm/.nvm/nvm.sh # This loads NVM
-export NODE_EXTRA_CA_CERTS=/home/cizekm/Downloads/SBKSAdminCA.pem
+export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/SBKSAdminCA-chain.pem
 
 
 # Reset
@@ -133,7 +191,7 @@ Jobs="\j"
 
 function node_version_alert() {
     if [ -f package.json ]; then
-        DESIRED_NODE_VERSION=$(cat package.json | grep "\"node\"" | awk {'print $2'} | tr -d "\"^,")
+        DESIRED_NODE_VERSION=$(cat package.json | grep "\"node\"" | awk {'print $2'} | tr -d "\"^,\r")
         NODE_VERSION=$(node -v | tr -d v)
         # DESIRED_NPM_VERSION=$(cat package.json | grep "\"npm\"" | awk {'print $2'} | tr -d "\"^")
         # NPM_VERSION=$(npm -v)
@@ -179,55 +237,7 @@ _sbks() {
 alias sbks=_sbks
 complete -W "$(echo `sbks && ls | cut -f 1 -d ' ' | uniq | tr '\n' ' '`;)" sbks
 
-
-connect_pg ()
-{
-    CONNSTR=$1;
-    if [ -z "$1" ]; then
-        if [ -f .env ]; then
-            PGS=(`grep PG .env`);
-        else
-            PGS=();
-        fi;
-        if [ ${#PGS[@]} == 0 ]; then
-            echo "input connstr:";
-            read CONNSTR;
-        else
-            if [ ${#PGS[@]} == 1 ]; then
-                CONNSTR=${PGS[0]};
-            else
-                echo "which db?";
-                for X in $(seq ${#PGS[@]});
-                do
-                    echo "[$X] - ${PGS[$X-1]}";
-                done;
-                read IDX;
-                CONNSTR=${PGS[$IDX-1]};
-            fi;
-        fi;
-    fi;
-    printf "\n\n=====================================================================";
-    printf "\nUsing:";
-    printf "\n\e[1m\e[93m${CONNSTR}\e[0m";
-    printf "\n=====================================================================\n\n";
-    CONNSTR=${CONNSTR#*//};
-    USER=${CONNSTR%%:*};
-    CONNSTR=${CONNSTR#*:};
-    PASS=${CONNSTR%%@*};
-    CONNSTR=${CONNSTR#*@};
-    if [[ $CONNSTR == *":"* ]]; then
-        HOST=${CONNSTR%:*};
-        CONNSTR=${CONNSTR#*:};
-        PORT=${CONNSTR%/*};
-        CONNSTR=${CONNSTR##*/};
-    else
-        HOST=${CONNSTR%/*};
-        CONNSTR=${CONNSTR##*/};
-    fi
-    DB=${CONNSTR%\?*};
-    PGPASSWORD=$PASS psql -h $HOST -U $USER $DB
-}
-
+alias land="npm run | grep -q land && (npm run land && git checkout -) || arc land"
 
 # PFM
 # enable color support of ls and also add handy aliases
@@ -242,20 +252,19 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-alias mon_vga='xrandr --output DP-2 --mode 1920x1080 --output DP-1 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --mode 1600x900 --below DP-2'
-alias mon_vga_only='xrandr --output DP-2 --mode 1920x1080 --output DP-1 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --off'
-alias mon_hdmi='xrandr --output HDMI-1 --mode 1920x1080 --output DP-1 --off --output DP-2 --off --output HDMI-2 --off --output eDP-1 --mode 1600x900 --below HDMI-1'
-alias mon_hdmi_only='xrandr --output HDMI-1 --mode 1920x1080 --output DP-1 --off --output DP-2 --off --output HDMI-2 --off --output eDP-1 --off'
-alias mon_laptop='xrandr --output DP-1 --off --output DP-2 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --mode 1920x1080'
-alias mon_dp_only='xrandr --output DP-1 --mode 1920x1200 --output DP-1 --off --output HDMI-1 --off --output HDMI-2 --off --output eDP-1 --off'
+alias mon_hdmi='xrandr --output HDMI2 --mode 2560x1440 --output eDP1 --off'
+alias mon_hdmi_laptop='xrandr --output HDMI2 --mode 2560x1440 --output eDP1 --mode 2560x1440 --below HDMI2'
+alias mon_laptop='xrandr --output eDP1 --mode 2560x1440 --output HDMI2 --off'
 
 
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 
-alias kdo='dig +short -x'
-alias pmsuspend='xscreensaver-command --lock && sudo pm-suspend'
-alias pmhibernate='xscreensaver-command --lock && sudo pm-suspend-hibernate'
+function kdo() {
+    dig +short -x $1 @dns1.us-w2.aws.ccl
+}
+alias pmsuspend='mon_laptop && sudo pm-suspend'
+alias pmhibernate='sudo pm-suspend-hibernate'
 
 alias killchrome='ps ux | grep '\''[C]hrome Helper --type=renderer'\'' | grep -v extension-process | awk '\''{print $2}'\'''
 
@@ -270,7 +279,7 @@ export HISTFILESIZE=2000000
 #export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 export NODE_HEAPDUMP_OPTIONS=nosignal
 export EDITOR=vim
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle/jre
+export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
 
 function odjebat() {
     ssh-keygen -R $1 && ssh -o 'StrictHostKeyChecking=no' $1
@@ -303,3 +312,8 @@ alias pendolino="curl -H 'Host: www.imbord.info' 'https://10.0.1.254/hotspot/hot
 
 export MARATONEC_TOKEN=9uM7PBqy8yJJsKeUNMzP
 export CHROMIUM_FLAGS=--enable-remote-extensions
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin:$HOME/.local/bin"
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*

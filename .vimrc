@@ -25,8 +25,9 @@
 	Plugin 'isRuslan/vim-es6'
 	Plugin 'henrik/vim-indexed-search'
 	Plugin 'ap/vim-css-color'
+	Plugin 'prettier/vim-prettier'
 	Bundle 'vim-scripts/twilight'
-	Bundle 'tpope/vim-sleuth'
+	"Bundle 'tpope/vim-sleuth' opening some files took 30s
 	Bundle 'mattn/webapi-vim'
 	Bundle 'mattn/gist-vim'
 	Bundle 'derekwyatt/vim-scala'
@@ -140,13 +141,13 @@ vmap <C-y> "*y
 
 
 
-map <C-S-tab> :tabprev<cr>
-"nmap <C-S-tab> :tabprev<cr>
-"imap <C-S-tab> <ESC>:tabprev<cr>a
+map <tab> :tabnext<cr>
+"nmap <tab> :tabnext<cr>
+"imap <tab> <ESC>:tabnext<cr>a
 
-map <S-tab> :tabnext<cr>
-"nmap <S-tab> :tabnext<cr>
-"imap <S-tab> <ESC>:tabnext<cr>a
+map <S-tab> :tabprev<cr>
+"nmap <S-tab> :tabprev<cr>
+"imap <S-tab> <ESC>:tabprev<cr>a
 
 map <C-t> :tabnew 
 "nmap <C-t> :tabnew 
@@ -194,6 +195,8 @@ if has("autocmd")
   autocmd FileType c,cpp,java,php,ruby,python,js,cjsx,jsx,coffee,scala autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
   autocmd BufEnter * :syntax sync fromstart
   autocmd BufRead,BufNewFile *.cjsx set filetype=coffee
+  autocmd BufNewFile,BufRead *.ejs set filetype=html
+  autocmd BufWritePre <buffer> Prettier
 
   " Enable file type detection.
   " Use the default filetype settings, so that mail gets 'tw' set to 72,

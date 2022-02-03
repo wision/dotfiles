@@ -11,6 +11,7 @@ import Graphics.X11.ExtraTypes.XF86
 
 --import XMonad.Hooks.ICCCMFocus
 import XMonad.Hooks.SetWMName
+import XMonad.Hooks.EwmhDesktops
 --import DBus.Client.Simple
 --mport System.Taffybar.XMonadLog (dbusLogWithPP, taffybarPP)
 import System.IO
@@ -22,7 +23,9 @@ import qualified Data.Map        as M
 
 import XMonad.Util.Run(spawnPipe)
 
-myTerminal      = "uxterm"
+--myTerminal      = "uxterm"
+--myTerminal      = "kitty"
+myTerminal      = "alacritty"
 myBorderWidth   = 1
 myModMask       = mod4Mask
 
@@ -181,6 +184,8 @@ myLogHook = dynamicLogWithPP $ xmobarPP {
 -- main = xmonad defaults
 -- myBar = "xmobar"
 main = xmonad =<< xmobar defaults
+--main = xmonad $ ewmh def{ handleEventHook =
+--           handleEventHook def <+> fullscreenEventHook }
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will 

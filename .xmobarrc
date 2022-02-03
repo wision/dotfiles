@@ -38,7 +38,9 @@ Config {
                              ] 10
 --        , Run Network "enp0s31f6" ["-t","<rx> / <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
 --        , Run Network "wlp61s0" ["-t","<rx> / <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
-        , Run DynNetwork     [ "--template" , "<dev>: <tx> / <rx>"
+--        , Run Network "wwp0s20f0u6" ["-t","<rx> / <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
+--        , Run Network "wwan0" ["-t","<rx> / <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
+        , Run DynNetwork     [ "--template" , "<dev>: <rx> / <tx>"
                              , "--Low"      , "50000"
                              , "--High"     , "1000000"
                              , "--low"      , "lightgreen"
@@ -60,5 +62,5 @@ Config {
         , Run Com "uname" ["-s","-r"] "" 36000
     ]
 
-    , template = "%StdinReader% }{ %cpu% - %coretemp% - %cpufreq% | %memory% - %swap% | %dynnetwork% | %wlp61s0wi%                              %battery% | <fc=#ee9a00>%date%</fc> | %uname%"
+    , template = "%StdinReader% }{ %cpu% - %coretemp% | %memory% - %swap% | %dynnetwork% | %wlp61s0wi%                               %battery% | <fc=#ee9a00>%date%</fc> | %uname%"
 }
