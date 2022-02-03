@@ -310,7 +310,7 @@ alias df='colourify df'
 
 alias pendolino="curl -H 'Host: www.imbord.info' 'https://10.0.1.254/hotspot/hotspot.cgi?method=login&username=lab&password=CAEN&realm=lab' -kIL"
 
-export MARATONEC_TOKEN=9uM7PBqy8yJJsKeUNMzP
+export MARATONEC_TOKEN=
 export CHROMIUM_FLAGS=--enable-remote-extensions
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
