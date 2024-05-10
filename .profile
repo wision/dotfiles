@@ -104,7 +104,7 @@ function c(){
 }
 
 [[ -s /home/cizekm/.nvm/nvm.sh ]] && . /home/cizekm/.nvm/nvm.sh # This loads NVM
-export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/SBKSAdminCA-chain.pem
+export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/nodejs-sbks-aws-chain.pem
 
 
 # Reset
@@ -203,13 +203,10 @@ function node_version_alert() {
 
 function sbks_env() {
     if [ -f .env ]; then
-        echo " $(cat .env | grep "ENVIRONMENT_NAME=" | cut -f 2 -d '=')"
+        echo " $(cat .env | grep "^ENVIRONMENT_NAME=" | cut -f 2 -d '=')"
     fi
 }
 
-
-# This PS1 snippet was adopted from code for MAC/BSD I saw from: http://allancraig.net/index.php?option=com_content&view=article&id=108:ps1-export-command-for-git&catid=45:general&Itemid=96
-# I tweaked it to work on UBUNTU 11.04 & 11.10 plus made it mo' better
 
 source /etc/bash_completion.d/git-prompt
 source ~/git-completion.bash
@@ -252,23 +249,25 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-alias mon_hdmi='xrandr --output HDMI2 --mode 2560x1440 --output eDP1 --off'
-alias mon_hdmi_laptop='xrandr --output HDMI2 --mode 2560x1440 --output eDP1 --mode 2560x1440 --below HDMI2'
-alias mon_laptop='xrandr --output eDP1 --mode 2560x1440 --output HDMI2 --off'
+alias mon_hdmi='xrandr --output HDMI-A-0 --mode 3840x2160 --output eDP --off'
+alias mon_dp='xrandr --output DisplayPort-0 --mode 3840x2160 --output eDP --off'
+alias mon_hdmi_laptop='xrandr --output HDMI-A-0 --mode 3840x2160 --output eDP --mode 3840x2160 --below HDMI-A-0'
+alias mon_laptop='xrandr --output eDP --mode 3840x2160 --output HDMI-A-0 --off --output DisplayPort-0 --off'
 
 
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 
 function kdo() {
-    dig +short -x $1 @dns1.us-w2.aws.ccl
+    dig +short -x $1 @dns-master.eu-c1.aws.ccl
 }
-alias pmsuspend='mon_laptop && sudo pm-suspend'
+#alias pmsuspend='mon_laptop && sudo pm-suspend'
+alias pmsuspend='mon_laptop && systemctl suspend'
 alias pmhibernate='sudo pm-suspend-hibernate'
 
 alias killchrome='ps ux | grep '\''[C]hrome Helper --type=renderer'\'' | grep -v extension-process | awk '\''{print $2}'\'''
 
-setxkbmap -layout vok_sk
+#setxkbmap -layout vok_sk
 
 export PROMPT_COMMAND='
 echo -ne "\033]0;${USER}@${HOSTNAME%%.*}: ${PWD/#$HOME/~}\007"
@@ -278,7 +277,7 @@ export HISTSIZE=100000
 export HISTFILESIZE=2000000
 #export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 export NODE_HEAPDUMP_OPTIONS=nosignal
-export EDITOR=vim
+export EDITOR=nvim
 export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
 
 function odjebat() {
@@ -298,6 +297,7 @@ alias gas='colourify gas'
 alias ld='colourify ld'
 alias netstat='colourify netstat'
 alias ping='colourify ping'
+alias ping6='colourify ping6'
 alias traceroute='colourify /usr/sbin/traceroute'
 alias head='colourify head'
 alias tail='colourify tail'
@@ -313,7 +313,41 @@ alias pendolino="curl -H 'Host: www.imbord.info' 'https://10.0.1.254/hotspot/hot
 export MARATONEC_TOKEN=
 export CHROMIUM_FLAGS=--enable-remote-extensions
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin:$HOME/.local/bin"
+kubeexec ()
+{
+    kubectl exec --stdin --tty $@ -- /bin/entrypoint.sh bash
+}
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+# # pixlee
+# export NAMESPACE=martin
+# export HEROKU_ORGANIZATION=pixlee
+# export VAULT_ENV=martin_local
+# export VAULT_ADDR=
+# export VAULT_NAMESPACE=admin
+# export FA_AUTH_TOKEN=
+# export PIXLEETURNTO_NPM_TOKEN=
+#
+# # Self Generated Tokens
+# export GITHUB_API_TOKEN=
+# export VAULT_GITHUB_TOKEN=$GITHUB_API_TOKEN
+# export GITHUB_TOKEN=$GITHUB_API_TOKEN
+#
+# # Prefer to use credentials profiles
+# # instead of env vars for AWS creds
+# #export AWS_ACCESS_KEY_ID=
+# #export AWS_SECRET_ACCESS_KEY=
+# #export AWS_DEFAULT_REGION=
+# eval "$(/home/cizekm/.rbenv/bin/rbenv init - bash)"
+# # END pixlee
+
+
+unset AWS_ACCESS_KEY_ID
+unset AWS_SECRET_ACCESS_KEY
+unset AWS_DEFAULT_REGION
+unset GITHUB_TOKEN
+unset GITHUB_API_TOKEN
+
+alias vi="nvim"
+
+export DENO_INSTALL="/home/cizekm/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
