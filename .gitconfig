@@ -1,17 +1,17 @@
 [core]
 	editor = vim
 	excludesfile = /home/cizekm/.gitignore_global
-	#pager = diff-so-fancy | less --tabs=4 -RFX
+	pager = diff-so-fancy | less -r --tabs=4 -RFX
 [color]
 	diff = auto
 	status = auto
 	branch = auto
-	ui = auto
+	ui = true
 [format]
 	#pretty = "Commit:  %C(yellow)%H%nAuthor:  %C(green)%aN <%aE>%nDate:    (%C(red)%ar%Creset) %ai%nSubject: %s%n%n%b"
 	pretty = "%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset"
 [user]
-	email = martin.cizek@socialbakers.com
+	email = martin.cizek@emplifi.io
 	name = Martin Cizek
 [alias]
 	st = status -sb
@@ -21,3 +21,8 @@
 	l = log --all --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 [github]
 	user = wision
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
